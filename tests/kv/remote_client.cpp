@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
     int flag = 0;
     for(int i=0; i<12; i++){
         if(str1[i] != ':' || str1[i] != '.'){
-            char temp = (char *)str2[i] - str1[i];
+            char temp = (char)str2[i] - str1[i];
             if(temp !=0 || flag == 1){
                 str3 += temp;
                 flag = 1;
