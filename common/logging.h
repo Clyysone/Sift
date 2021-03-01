@@ -45,17 +45,6 @@ inline std::string timestamp() {
     return buffer;
 }
 
-inline std::string timestamp_span(std::string str1, std::string str2)
-{
-    std::string str3;
-    for(int i=0; i<15; i++){
-        if(str1[i] != ':'){
-            str3[i] = str2[i] - str1[i];
-        }
-        else str3[i] = ':';
-    }
-    return str3;
-}
 
 inline void stack_trace() {
     void *array[10];

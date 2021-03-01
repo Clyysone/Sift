@@ -76,9 +76,15 @@ int main(int argc, char **argv) {
     }
 
     std::string str2 = timestamp();
-    std::string str3 = timestamp_span();
+    std::string str3;
+    for(int i=0; i<15; i++){
+        if(str1[i] != ':' || str1[i] != '.'){
+            str3[i] = str2[i] - str1[i];
+        }
+        else str3[i] = ':';
+    }
     LogInfo("Results: " << completed_gets << " gets, " << completed_puts << " puts");
-    LogInfo(str3);s
+    LogInfo(str3);
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
     return 0;
