@@ -17,6 +17,7 @@
 #include "common/common.h"
 
 #include <random>
+#include <math.h>
 
 const int num_keys = KV_SIZE;
 
@@ -69,7 +70,9 @@ int main(int argc, char **argv) {
     std::uniform_int_distribution<std::mt19937::result_type> dist(1,num_keys-1);
 
     LogInfo("Running workload...");
+    
     std::string str1 = timestamps();
+    
     uint64_t completed_gets = 0;
     uint64_t completed_puts = 0;
 
@@ -87,6 +90,7 @@ int main(int argc, char **argv) {
         }
     }
 
+    std::string str2 = timestamps();
     int time1=0, time2=0;
     int j=0 , k=0;
     for(int i=0; i<=11; i++){
