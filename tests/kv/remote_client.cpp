@@ -94,10 +94,10 @@ int main(int argc, char **argv) {
 
     int h1=str1.find(':') , m1=str1.rfind(':'), s1=str1.find('.');
     int h2=str2.find(':') , m2=str2.rfind(':'), s2=str2.find('.');
-    string hr1=str1.substr(0, h1), hr2=str2.substr(0, h2);
-    string min1=str1.substr(h1+1, m1-h1-1), min2=str2.substr(h2+1, m2-h2-1); 
-    string sec1=str1.substr(m1+1, s1-m1-1), sec2=str2.substr(m2+1, s2-m2-1);
-    string usec1=str1.substr(s1+1, 3), usec2=str2.substr(s2+1, 3); 
+    std::string hr1=str1.substr(0, h1), hr2=str2.substr(0, h2);
+    std::string min1=str1.substr(h1+1, m1-h1-1), min2=str2.substr(h2+1, m2-h2-1); 
+    std::string sec1=str1.substr(m1+1, s1-m1-1), sec2=str2.substr(m2+1, s2-m2-1);
+    std::string usec1=str1.substr(s1+1, 3), usec2=str2.substr(s2+1, 3); 
     int hr3=atoi(hr2.c_str())-atoi(hr1.c_str());
     int min3=atoi(min2.c_str())-atoi(min1.c_str());
     int sec3=atoi(sec2.c_str())-atoi(sec1.c_str());
