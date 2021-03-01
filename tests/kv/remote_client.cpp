@@ -70,6 +70,7 @@ int main(int argc, char **argv) {
 
     LogInfo("Running workload...");
     std::string str1 = timestamps();
+    LogInfo(str1);
     uint64_t completed_gets = 0;
     uint64_t completed_puts = 0;
 
