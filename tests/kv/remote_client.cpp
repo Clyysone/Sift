@@ -70,7 +70,6 @@ int main(int argc, char **argv) {
 
     LogInfo("Running workload...");
     std::string str1 = timestamps();
-    LogInfo(str1);
     uint64_t completed_gets = 0;
     uint64_t completed_puts = 0;
 
@@ -88,19 +87,21 @@ int main(int argc, char **argv) {
         }
     }
 
-    std::string str2 = timestamps();
-    std::string str3 = "";
-    int flag = 0;
-    for(int i=0; i<12; i++){
-        if(str1[i] != ':' || str1[i] != '.'){
-            char temp = (char)(str2[i] - str1[i]);
-            if(temp !=0 || flag == 1){
-                str3 += temp;
-                flag = 1;
-            }
+    int time1=0, time2=0;
+    int j=0 , k=0;
+    for(int i=0; i<=11; i++){
+        if(str1.at(i)>='0' && str1.at(i)<='9'){
+            time1 += (str1.at(i)-'0')*pow(10,8-j);
+            j++;
+        }
+        if(str2.at(i)>='0' && str2.at(i)<='9'){
+            time2 += (str2.at(i)-'0')*pow(10,8-k);
+            k++;
         }
     }
-    LogInfo("Results: " << completed_gets << " gets, " << completed_puts << " puts, Total consume " << str3 << "ms");
+    int time3 = time2 - time1;
+
+    LogInfo("Results: " << completed_gets << " gets, " << completed_puts << " puts, Total consume " << time3 << "ms");
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
     return 0;
