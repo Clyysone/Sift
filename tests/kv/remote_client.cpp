@@ -20,7 +20,7 @@
 
 const int num_keys = KV_SIZE;
 
-std::string timestamp() {
+std::string timestamps() {
     std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
     std::time_t tt = std::chrono::system_clock::to_time_t(tp);
     std::tm gmt{};
@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
     std::uniform_int_distribution<std::mt19937::result_type> dist(1,num_keys-1);
 
     LogInfo("Running workload...");
-    std::string str1 = timestamp();
+    std::string str1 = timestamps();
     uint64_t completed_gets = 0;
     uint64_t completed_puts = 0;
 
@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    std::string str2 = timestamp();
+    std::string str2 = timestamps();
     std::string str3 = "";
     int flag = 0;
     for(int i=0; i<12; i++){
