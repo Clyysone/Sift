@@ -20,6 +20,18 @@
 
 const int num_keys = KV_SIZE;
 
+std::string timestamp() {
+    std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
+    std::time_t tt = std::chrono::system_clock::to_time_t(tp);
+    std::tm gmt{};
+    gmtime_r(&tt, &gmt);
+    std::chrono::duration<double> fractional_seconds =
+            (tp - std::chrono::system_clock::from_time_t(tt)) + std::chrono::seconds(gmt.tm_sec);
+    std::string buffer("hr:mn:sc.xxxxxx");
+    sprintf(&buffer.front(), "%02d:%02d:%08.6f", gmt.tm_hour, gmt.tm_min, fractional_seconds.count());
+    return buffer;
+}
+
 int getOp() {
     static thread_local std::default_random_engine generator;
     std::uniform_int_distribution<int> intDistribution(0,99);
@@ -76,15 +88,18 @@ int main(int argc, char **argv) {
     }
 
     std::string str2 = timestamp();
-    std::string str3;
-    for(int i=0; i<15; i++){
+    std::string str3 = "";
+    int flag = 0;
+    for(int i=0; i<12; i++){
         if(str1[i] != ':' || str1[i] != '.'){
-            str3[i] = str2[i] - str1[i];
+            char temp = str2[i] - str1[i];
+            if(temp !=0 || flag == 1){
+                str3 += temp;
+                flag = 1;
+            }
         }
-        else str3[i] = ':';
     }
-    LogInfo("Results: " << completed_gets << " gets, " << completed_puts << " puts");
-    LogInfo(str3);
+    LogInfo("Results: " << completed_gets << " gets, " << completed_puts << " puts, Total consume " << str3 << "ms");
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
     return 0;
