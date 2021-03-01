@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    LogInfo("Result: " << completed_gets << " gets, " << completed_putss << " puts");
+    LogInfo("Results: " << completed_gets << " gets, " << completed_puts << " puts");
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
     return 0;
