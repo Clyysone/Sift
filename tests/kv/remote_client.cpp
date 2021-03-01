@@ -103,7 +103,6 @@ int main(int argc, char **argv) {
     int sec3=atoi(sec2.c_str())-atoi(sec1.c_str());
     int usec3=atoi(usec2.c_str())-atoi(usec1.c_str());
     int time3=hr3*60*60*1000+min3*60*1000+sec3*1000+usec3;
-    cout << time3;
 
     LogInfo("Results: " << completed_gets << " gets, " << completed_puts << " puts, Total consume " << time3 << "ms");
     std::this_thread::sleep_for(std::chrono::seconds(1));
