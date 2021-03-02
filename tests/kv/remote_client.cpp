@@ -41,7 +41,7 @@ std::string timestamps() {
 void * print_stats_thread(void * no_arg)
 {
     std::ofstream p;
-    p.open("output.csv", ios::out|ios::trunc); 
+    p.open("output.csv"); 
     p << "Time(ms)" << "," << "Throughout(MReqs/s)" << std::endl;
     int print_count = 0;
     double total_throughput=0;
@@ -62,6 +62,7 @@ void * print_stats_thread(void * no_arg)
         printf("NODE MReqs/s: %.2f \n", total_throughput);
         printf("-------------------------------------\n");
     }
+    p.close();
 }
 
 
