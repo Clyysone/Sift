@@ -22,7 +22,7 @@
 #define PRINT_STATS_EVERY_MSECS 100
 
 const int num_keys = KV_SIZE;
-volatile float w_stats;
+volatile double w_stats;
 
 std::string timestamps() {
     std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
@@ -39,7 +39,8 @@ std::string timestamps() {
 void * print_stats_thread(void * no_arg)
 {
     int print_count = 0;
-    float curr_w_stats, pre_w_stats = w_stats;
+    double total_throughput=0;
+    double curr_w_stats, pre_w_stats = w_stats;
     struct timespec start, end;
     clock_gettime(CLOCK_REALTIME, &start);
     while(true){
@@ -49,7 +50,6 @@ void * print_stats_thread(void * no_arg)
         start = end;
         curr_w_stats = w_stats;
         total_throughput = (curr_w_stats - pre_w_stats) / seconds;
-        cout << curr_w_stats - pre_w_stats << seconds;
         pre_w_stats = curr_w_stats;
         print_count++;
         printf("--------------PRINT %d time elapsed %.6f--------------\n", print_count, seconds);
