@@ -18,6 +18,7 @@
 
 #include <random>
 #include <math.h>
+#include <fstream>
 
 #define PRINT_STATS_EVERY_MSECS 10
 
@@ -38,6 +39,9 @@ std::string timestamps() {
 
 void * print_stats_thread(void * no_arg)
 {
+    ofstream p;
+    p.open("output.csv", ios::out|ios::trunc); 
+    p << "Time(ms)" << "," << "Throughout(MReqs/s)" << endl;
     int print_count = 0;
     double total_throughput=0;
     double curr_w_stats, pre_w_stats = w_stats;
@@ -52,6 +56,7 @@ void * print_stats_thread(void * no_arg)
         total_throughput = (curr_w_stats - pre_w_stats) / seconds;
         pre_w_stats = curr_w_stats;
         print_count++;
+        p << print_count * PRINT_STATS_EVERY_MSECS << "," << total_throughput << endl;
         printf("--------------PRINT %d time elapsed %.2f--------------\n", print_count, seconds*1000);
         printf("NODE MReqs/s: %.2f \n", total_throughput);
         printf("-------------------------------------\n");
