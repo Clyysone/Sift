@@ -52,7 +52,7 @@ void * print_stats_thread(void * no_arg)
         total_throughput = (curr_w_stats - pre_w_stats) / seconds;
         pre_w_stats = curr_w_stats;
         print_count++;
-        printf("--------------PRINT %d time elapsed %.6f--------------\n", print_count, seconds);
+        printf("--------------PRINT %d time elapsed %.2f--------------\n", print_count, seconds*1000);
         printf("NODE MReqs/s: %.2f \n", total_throughput);
         printf("-------------------------------------\n");
     }
