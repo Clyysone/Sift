@@ -19,10 +19,10 @@
 #include <random>
 #include <math.h>
 
-#define PRINT_STATS_EVERY_MSECS 100
+#define PRINT_STATS_EVERY_MSECS 10
 
 const int num_keys = KV_SIZE;
-volatile double w_stats;
+volatile double w_stats=0;
 
 std::string timestamps() {
     std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
