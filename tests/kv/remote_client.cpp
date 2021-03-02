@@ -39,7 +39,7 @@ std::string timestamps() {
 
 void * print_stats_thread(void * no_arg)
 {
-    ofstream p;
+    std::ofstream p;
     p.open("output.csv", ios::out|ios::trunc); 
     p << "Time(ms)" << "," << "Throughout(MReqs/s)" << endl;
     int print_count = 0;
