@@ -36,7 +36,7 @@ std::string timestamps() {
     return buffer;
 }
 
-void * print_stats_thread()
+void * print_stats_thread(void * no_arg)
 {
     int print_count = 0;
     float curr_w_stats, pre_w_stats = w_stats;
