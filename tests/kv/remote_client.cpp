@@ -19,7 +19,10 @@
 #include <random>
 #include <math.h>
 
+#define PRINT_STATS_EVERY_MSECS 100
+
 const int num_keys = KV_SIZE;
+volatile float w_stats;
 
 std::string timestamps() {
     std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
@@ -32,6 +35,29 @@ std::string timestamps() {
     sprintf(&buffer.front(), "%02d:%02d:%08.6f", gmt.tm_hour, gmt.tm_min, fractional_seconds.count());
     return buffer;
 }
+
+void * print_stats_thread()
+{
+    int print_count = 0;
+    float curr_w_stats, pre_w_stats = w_stats;
+    struct timespec start, end;
+    clock_gettime(CLOCK_REALTIME, &start);
+    while(true){
+        usleep(PRINT_STATS_EVERY_MSECS * 1000);
+        clock_gettime(CLOCK_REALTIME, &end);
+        double seconds = (end.tv_sec - start.tv_sec) + (double) (end.tv_nsec - start.tv_nsec) / 1000000001;
+        start = end;
+        curr_w_stats = w_stats;
+        total_throughput = (curr_w_stats - pre_w_stats) / seconds;
+        cout << curr_w_stats - pre_w_stats << seconds;
+        pre_w_stats = curr_w_stats;
+        print_count++;
+        printf("--------------PRINT %d time elapsed %.6f--------------\n", print_count, seconds);
+        printf("NODE MReqs/s: %.2f \n", total_throughput);
+        printf("-------------------------------------\n");
+    }
+}
+
 
 int getOp() {
     static thread_local std::default_random_engine generator;
@@ -71,6 +97,10 @@ int main(int argc, char **argv) {
 
     LogInfo("Running workload...");
     
+    //
+    pthread_t print_thread;
+    pthread_create(&print_thread, NULL, print_stats_thread, NULL);
+
     std::string str1 = timestamps();
     
     uint64_t completed_gets = 0;
@@ -83,10 +113,12 @@ int main(int argc, char **argv) {
         if (op < read_prob) {
             client.get(key);
             completed_gets++;
+            w_stats++;
         } else {
             std::string value("this is a test string " + std::to_string(i));
             client.put(key, value);
             completed_puts++;
+            w_stats++;
         }
     }
 
@@ -109,3 +141,5 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+
+
