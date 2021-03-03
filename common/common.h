@@ -25,7 +25,7 @@
 // Size of the quorum
 #define QUORUM ((TOTAL_MEMORY_SERVERS/2) + 1)
 // File containing memory server addresses and ports
-#define CONFIG_FILE "/home/cyl/Sift/servers.config"
+#define CONFIG_FILE "/home/fukan/cyl/Sift/servers.config"
 
 /* VARIOUS SYSTEM FLAGS */
 
