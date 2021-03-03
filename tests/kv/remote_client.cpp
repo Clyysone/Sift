@@ -180,9 +180,7 @@ int main(int argc, char **argv) {
         pstru.client = client[j];
         pthread_create(&client_thread[j], NULL, exec_ops , &(pstru) );
     }
-    for(int j=0; j<NUM_CLIENT; j++){
-        pthread_join(client_thread[j], NULL);
-    }
+    
 
     /*
     for (int i = 0; i < num_ops; i++) {
@@ -208,6 +206,9 @@ int main(int argc, char **argv) {
     LogInfo("Results: " << completed_gets << " gets, " << completed_puts << " puts, Total consume " << time3 << "ms");
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
+    for(int j=0; j<NUM_CLIENT; j++){
+        pthread_join(client_thread[j], NULL);
+    }
     return 0;
 }
 
