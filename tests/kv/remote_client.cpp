@@ -109,15 +109,16 @@ void * exec_ops(void * arg)
 
         if (op < pstru->read_prob) {
             pstru->client->get(key);
-            (*pstru->completed_gets)++;
+            *(pstru->completed_gets)++;
             w_stats++;
         } else {
             std::string value("this is a test string " + std::to_string(i));
             pstru->client->put(key, value);
-            (*pstru->completed_puts)++;
+            *(pstru->completed_puts)++;
             w_stats++;
         }
     }
+    return NULL;
 }
 
 
@@ -181,6 +182,9 @@ int main(int argc, char **argv) {
         pthread_create(&client_thread[j], NULL, exec_ops , &(pstru) );
     }
     
+    for(int j=0; j<NUM_CLIENT; j++){
+        pthread_join(client_thread[j], NULL);
+    }
 
     /*
     for (int i = 0; i < num_ops; i++) {
@@ -206,9 +210,7 @@ int main(int argc, char **argv) {
     LogInfo("Results: " << completed_gets << " gets, " << completed_puts << " puts, Total consume " << time3 << "ms");
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
-    for(int j=0; j<NUM_CLIENT; j++){
-        pthread_join(client_thread[j], NULL);
-    }
+    
     return 0;
 }
 
