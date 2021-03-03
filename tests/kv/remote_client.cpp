@@ -22,7 +22,7 @@
 #include <iostream>
 
 #define PRINT_STATS_EVERY_MSECS 10
-#define NUM_CLIENT 1
+#define NUM_CLIENT 2
 
 const int num_keys = KV_SIZE;
 volatile double w_stats=0;
@@ -202,7 +202,7 @@ int main(int argc, char **argv) {
             w_stats++;
         }
     }*/
-
+    print_thread.exit
     std::string str2 = timestamps();
 
     int time3 = count_timespan(str1, str2); 
