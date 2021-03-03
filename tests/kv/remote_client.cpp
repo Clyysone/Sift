@@ -87,8 +87,11 @@ void * print_stats_thread(void * no_arg)
     p.close();
 }
 
-void * exec_ops(RemoteClient * client, uint64_t * completed_gets , uint64_t * completed_puts)
+void * exec_ops(RemoteClient * client, uint64_t * completed_gets , uint64_t * completed_puts, int num_ops, int read_prob)
 {
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<std::mt19937::result_type> dist(1,num_keys-1);
     for (int i = 0; i < num_ops; i++) {
         int op = getOp();
         std::string key("keykeykey" + std::to_string(dist(rng)));
@@ -123,7 +126,7 @@ int main(int argc, char **argv) {
     RemoteClient * client[NUM_CLIENT];
 
     for(int j=0; j<NUM_CLIENT; j++){
-        client[j] = new client(server_addr, server_port);
+        client[j] = new RemoteClient(server_addr, server_port);
     }
 
     LogInfo("Starting test");
@@ -143,10 +146,6 @@ int main(int argc, char **argv) {
     }
     LogInfo("Done populating kv store");
 
-    std::random_device dev;
-    std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist(1,num_keys-1);
-
     LogInfo("Running workload...");
     
     //
@@ -161,7 +160,7 @@ int main(int argc, char **argv) {
     //thread
     pthread_t client_thread[NUM_CLIENT];
     for(int j=0; j<NUM_CLIENT; j++){
-        pthread_create(&client_thread[j], NULL, exec_ops(&client_thread[j], &completed_gets, &completed_puts), NULL);
+        pthread_create(&client_thread[j], NULL, exec_ops(&client[j], &completed_gets, &completed_puts, num_ops, read_prob), NULL);
     }
     for(int j=0; j<NUM_CLIENT; j++){
         pthread_join(client_thread[j], NULL);
