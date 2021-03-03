@@ -35,7 +35,7 @@ struct mypara
     uint64_t * completed_puts;
     int num_ops;
     int read_prob;
-}
+};
 
 std::string timestamps() {
     std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
