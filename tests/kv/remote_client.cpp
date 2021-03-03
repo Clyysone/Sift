@@ -103,18 +103,18 @@ void * exec_ops(void * arg)
     std::random_device dev;
     std::mt19937 rng(dev());
     std::uniform_int_distribution<std::mt19937::result_type> dist(1,num_keys-1);
-    for (int i = 0; i < pstru.num_ops; i++) {
+    for (int i = 0; i < pstru->num_ops; i++) {
         int op = getOp();
         std::string key("keykeykey" + std::to_string(dist(rng)));
 
-        if (op < pstru.read_prob) {
-            pstru.client->get(key);
-            (*pstru.completed_gets)++;
+        if (op < pstru->read_prob) {
+            pstru->client->get(key);
+            (*pstru->completed_gets)++;
             w_stats++;
         } else {
             std::string value("this is a test string " + std::to_string(i));
-            pstru.client->put(key, value);
-            (pstru.completed_puts)++;
+            pstru->client->put(key, value);
+            (*pstru->completed_puts)++;
             w_stats++;
         }
     }
