@@ -22,7 +22,7 @@
 #include <iostream>
 
 #define PRINT_STATS_EVERY_MSECS 10
-#define NUM_CLIENT 8
+#define NUM_CLIENT 2
 
 const int num_keys = KV_SIZE;
 volatile double w_stats=0;
@@ -95,6 +95,7 @@ void * print_stats_thread(void * no_arg)
         printf("-------------------------------------\n");
     }
     p.close();
+    return NULL;
 }
 
 void * exec_ops(void * arg)
