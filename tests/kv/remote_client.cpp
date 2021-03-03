@@ -95,7 +95,6 @@ void * print_stats_thread(void * no_arg)
         printf("-------------------------------------\n");
     }
     p.close();
-    return NULL;
 }
 
 void * exec_ops(void * arg)
