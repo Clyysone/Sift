@@ -99,6 +99,7 @@ void * print_stats_thread(void * no_arg)
 
 void * exec_ops(void * arg)
 {
+    struct mypara * pstru = (struct mypara *) arg;
     std::random_device dev;
     std::mt19937 rng(dev());
     std::uniform_int_distribution<std::mt19937::result_type> dist(1,num_keys-1);
