@@ -202,7 +202,7 @@ int main(int argc, char **argv) {
             w_stats++;
         }
     }*/
-    print_thread.exit
+    
     std::string str2 = timestamps();
 
     int time3 = count_timespan(str1, str2); 
