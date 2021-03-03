@@ -110,12 +110,12 @@ void * exec_ops(void * arg)
 
         if (op < pstru->read_prob) {
             pstru->client->get(key);
-            *(pstru->completed_gets)++;
+            (*(pstru->completed_gets))++;
             w_stats++;
         } else {
             std::string value("this is a test string " + std::to_string(i));
             pstru->client->put(key, value);
-            *(pstru->completed_puts)++;
+            (*(pstru->completed_puts))++;
             w_stats++;
         }
     }
