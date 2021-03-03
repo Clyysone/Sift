@@ -39,6 +39,21 @@ std::string timestamps() {
     return buffer;
 }
 
+int count_timespan(std::string str1, std::string str2){
+    int h1=str1.find(':') , m1=str1.rfind(':'), s1=str1.find('.');
+    int h2=str2.find(':') , m2=str2.rfind(':'), s2=str2.find('.');
+    std::string hr1=str1.substr(0, h1), hr2=str2.substr(0, h2);
+    std::string min1=str1.substr(h1+1, m1-h1-1), min2=str2.substr(h2+1, m2-h2-1); 
+    std::string sec1=str1.substr(m1+1, s1-m1-1), sec2=str2.substr(m2+1, s2-m2-1);
+    std::string usec1=str1.substr(s1+1, 3), usec2=str2.substr(s2+1, 3); 
+    int hr3=atoi(hr2.c_str())-atoi(hr1.c_str());
+    int min3=atoi(min2.c_str())-atoi(min1.c_str());
+    int sec3=atoi(sec2.c_str())-atoi(sec1.c_str());
+    int usec3=atoi(usec2.c_str())-atoi(usec1.c_str());
+    int time3=hr3*60*60*1000+min3*60*1000+sec3*1000+usec3;
+    return time3;
+}
+
 int getOp() {
     static thread_local std::default_random_engine generator;
     std::uniform_int_distribution<int> intDistribution(0,99);
@@ -171,17 +186,7 @@ int main(int argc, char **argv) {
 
     std::string str2 = timestamps();
 
-    int h1=str1.find(':') , m1=str1.rfind(':'), s1=str1.find('.');
-    int h2=str2.find(':') , m2=str2.rfind(':'), s2=str2.find('.');
-    std::string hr1=str1.substr(0, h1), hr2=str2.substr(0, h2);
-    std::string min1=str1.substr(h1+1, m1-h1-1), min2=str2.substr(h2+1, m2-h2-1); 
-    std::string sec1=str1.substr(m1+1, s1-m1-1), sec2=str2.substr(m2+1, s2-m2-1);
-    std::string usec1=str1.substr(s1+1, 3), usec2=str2.substr(s2+1, 3); 
-    int hr3=atoi(hr2.c_str())-atoi(hr1.c_str());
-    int min3=atoi(min2.c_str())-atoi(min1.c_str());
-    int sec3=atoi(sec2.c_str())-atoi(sec1.c_str());
-    int usec3=atoi(usec2.c_str())-atoi(usec1.c_str());
-    int time3=hr3*60*60*1000+min3*60*1000+sec3*1000+usec3;
+    int time3 = count_timespan(str1, str2); 
 
     LogInfo("Results: " << completed_gets << " gets, " << completed_puts << " puts, Total consume " << time3 << "ms");
     std::this_thread::sleep_for(std::chrono::seconds(1));
