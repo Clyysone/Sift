@@ -22,6 +22,7 @@
 #include <iostream>
 
 #define PRINT_STATS_EVERY_MSECS 10
+#define NUM_CLIENT 8
 
 const int num_keys = KV_SIZE;
 volatile double w_stats=0;
@@ -36,6 +37,12 @@ std::string timestamps() {
     std::string buffer("hr:mn:sc.xxxxxx");
     sprintf(&buffer.front(), "%02d:%02d:%08.6f", gmt.tm_hour, gmt.tm_min, fractional_seconds.count());
     return buffer;
+}
+
+int getOp() {
+    static thread_local std::default_random_engine generator;
+    std::uniform_int_distribution<int> intDistribution(0,99);
+    return intDistribution(generator);
 }
 
 void * print_stats_thread(void * no_arg)
@@ -65,12 +72,25 @@ void * print_stats_thread(void * no_arg)
     p.close();
 }
 
+void * exec_ops(RemoteClient * client, uint64_t * completed_gets , uint64_t * completed_puts)
+{
+    for (int i = 0; i < num_ops; i++) {
+        int op = getOp();
+        std::string key("keykeykey" + std::to_string(dist(rng)));
 
-int getOp() {
-    static thread_local std::default_random_engine generator;
-    std::uniform_int_distribution<int> intDistribution(0,99);
-    return intDistribution(generator);
+        if (op < read_prob) {
+            client->get(key);
+            completed_gets++;
+            w_stats++;
+        } else {
+            std::string value("this is a test string " + std::to_string(i));
+            client->put(key, value);
+            completed_puts++;
+            w_stats++;
+        }
+    }
 }
+
 
 int main(int argc, char **argv) {
     if (argc < 5) {
@@ -85,8 +105,15 @@ int main(int argc, char **argv) {
     int num_ops = std::stoi(argv[3]);
     int read_prob = std::stoi(argv[4]);
 
+    RemoteClient * client[NUM_CLIENT];
+
+    for(int j=0; j<NUM_CLIENT; j++){
+        client[j] = new client(server_addr, server_port);
+    }
+
     LogInfo("Starting test");
-    RemoteClient client(server_addr, server_port);
+    //RemoteClient client(server_addr, server_port);
+
 
     LogInfo("Populating store with " << num_keys << " values...");
     // Populate the store with values
@@ -94,7 +121,10 @@ int main(int argc, char **argv) {
     for (int i = 0; i < num_keys; i++) {
         std::string key("keykeykey" + std::to_string(i));
         std::string value("this is a test value " + std::to_string(i));
-        client.put(key, value);
+        for(int j=0; j<NUM_CLIENT; j++){
+            client[j]->put(key, value);
+        }
+        
     }
     LogInfo("Done populating kv store");
 
@@ -113,6 +143,16 @@ int main(int argc, char **argv) {
     uint64_t completed_gets = 0;
     uint64_t completed_puts = 0;
 
+    //thread
+    pthread_t client_thread[NUM_CLIENT];
+    for(int j=0; j<NUM_CLIENT; j++){
+        pthread_create(&client_thread[j], NULL, exec_ops(&client_thread[j], &completed_gets, &completed_puts), NULL);
+    }
+    for(int j=0; j<NUM_CLIENT; j++){
+        pthread_join(client_thread[j], NULL);
+    }
+
+    /*
     for (int i = 0; i < num_ops; i++) {
         int op = getOp();
         std::string key("keykeykey" + std::to_string(dist(rng)));
@@ -127,7 +167,7 @@ int main(int argc, char **argv) {
             completed_puts++;
             w_stats++;
         }
-    }
+    }*/
 
     std::string str2 = timestamps();
 
