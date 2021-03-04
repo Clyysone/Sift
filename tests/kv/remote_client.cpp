@@ -22,7 +22,7 @@
 #include <iostream>
 
 #define PRINT_STATS_EVERY_MSECS 10
-#define NUM_CLIENT 2
+#define NUM_CLIENT 8
 
 const int num_keys = KV_SIZE;
 volatile double w_stats = 0;
