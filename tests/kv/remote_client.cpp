@@ -205,6 +205,7 @@ int main(int argc, char **argv) {
     int time3 = count_timespan(str1, str2); 
 
     LogInfo("Results: " << completed_gets << " gets, " << completed_puts << " puts, Total consume " << time3 << "ms");
+    LogInfo("average throughout: " << (completed_gets+completed_puts)*1000/time3 << " MReqs/s");
     //std::this_thread::sleep_for(std::chrono::seconds(1));
 
     
