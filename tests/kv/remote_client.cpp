@@ -103,7 +103,7 @@ void * exec_populate(void * arg)
     for (int i = 0; i < num_keys; i++) {
         std::string key("keykeykey" + std::to_string(i));
         std::string value("this is a test value " + std::to_string(i));
-        client[j]->put(key, value);
+        client->put(key, value);
     }
     return NULL;
 }
@@ -163,7 +163,7 @@ int main(int argc, char **argv) {
     
     pthread_t populate_thread[NUM_CLIENT];
     for(int j=0; j<NUM_CLIENT; j++){
-        pthread_create(&populate_thread[j], NULL, exec_populate, client);
+        pthread_create(&populate_thread[j], NULL, exec_populate, &client[j]);
     }
     for(int j=0; j<NUM_CLIENT; j++){
         pthread_join(populate_thread[j], NULL);
