@@ -97,6 +97,18 @@ void * print_stats_thread(void * no_arg)
     p.close();
 }
 
+void * exec_populate(void * arg)
+{
+    RemoteClient * client = arg;
+    for (int i = 0; i < num_keys; i++) {
+        std::string key("keykeykey" + std::to_string(i));
+        std::string value("this is a test value " + std::to_string(i));
+        client[j]->put(key, value);
+    }
+    return NULL;
+}
+
+
 void * exec_ops(void * arg)
 {
     struct mypara * pstru = (struct mypara *) arg;
@@ -148,14 +160,15 @@ int main(int argc, char **argv) {
     LogInfo("Populating store with " << num_keys << " values...");
     // Populate the store with values
     // Population is single-threaded, might take a long time if KV_SIZE is large
-    for (int i = 0; i < num_keys; i++) {
-        std::string key("keykeykey" + std::to_string(i));
-        std::string value("this is a test value " + std::to_string(i));
-        for(int j=0; j<NUM_CLIENT; j++){
-            client[j]->put(key, value);
-        }
-        
+    
+    pthread_t populate_thread[NUM_CLIENT];
+    for(int j=0; j<NUM_CLIENT; j++){
+        pthread_create(&populate_thread[j], NULL, exec_populate, client);
     }
+    for(int j=0; j<NUM_CLIENT; j++){
+        pthread_join(populate_thread[j], NULL);
+    }
+    
     LogInfo("Done populating kv store");
 
     LogInfo("Running workload...");
@@ -202,7 +215,7 @@ int main(int argc, char **argv) {
             w_stats++;
         }
     }*/
-    
+
     std::string str2 = timestamps();
 
     int time3 = count_timespan(str1, str2); 
