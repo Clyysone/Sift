@@ -86,9 +86,7 @@ void * print_stats_thread(void * no_arg)
         pre_w_stats = curr_w_stats;
         print_count++;
         p << print_count * PRINT_STATS_EVERY_MSECS << "," << total_throughput << std::endl;
-        printf("--------------PRINT %d time elapsed %.2f--------------\n", print_count, seconds*1000);
-        printf("NODE MReqs/s: %.2f \n", total_throughput);
-        printf("-------------------------------------\n");
+        printf("PRINT %d time elapsed %.4f ms, NODE MReqs/s: %.2f \n", print_count, seconds*1000, total_throughput);
     }
     p.close();
 }
