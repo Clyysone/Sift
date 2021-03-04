@@ -163,7 +163,7 @@ int main(int argc, char **argv) {
     
     pthread_t populate_thread[NUM_CLIENT];
     for(int j=0; j<NUM_CLIENT; j++){
-        pthread_create(&populate_thread[j], NULL, exec_populate, &client[j]);
+        pthread_create(&populate_thread[j], NULL, exec_populate, client[j]);
     }
     for(int j=0; j<NUM_CLIENT; j++){
         pthread_join(populate_thread[j], NULL);
