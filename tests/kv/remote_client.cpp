@@ -99,7 +99,7 @@ void * print_stats_thread(void * no_arg)
 
 void * exec_populate(void * arg)
 {
-    RemoteClient * client = arg;
+    RemoteClient * client = (RemoteClient *)arg;
     for (int i = 0; i < num_keys; i++) {
         std::string key("keykeykey" + std::to_string(i));
         std::string value("this is a test value " + std::to_string(i));
