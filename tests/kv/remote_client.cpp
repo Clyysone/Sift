@@ -207,7 +207,7 @@ int main(int argc, char **argv) {
     int time3 = count_timespan(str1, str2); 
 
     LogInfo("Results: " << completed_gets << " gets, " << completed_puts << " puts, Total consume " << time3 << "ms");
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    //std::this_thread::sleep_for(std::chrono::seconds(1));
 
     
     return 0;
