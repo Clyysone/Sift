@@ -118,7 +118,7 @@ void * exec_ops(void * arg)
     for (int i = 0; i < pstru->num_ops; i++) {
         int op = getOp();
         std::string key("keykeykey" + std::to_string(dist(rng)));
-
+        printf("%d\n", i);
         if (op < pstru->read_prob) {
             pstru->client->get(key);
             (*(pstru->completed_gets))++;
