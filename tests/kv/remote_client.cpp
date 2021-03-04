@@ -86,7 +86,7 @@ void * print_stats_thread(void * no_arg)
         pre_w_stats = curr_w_stats;
         print_count++;
         p << print_count * PRINT_STATS_EVERY_MSECS << "," << total_throughput << std::endl;
-        printf("PRINT %d time elapsed %.4f ms, NODE MReqs/s: %.2f \n", print_count, seconds*1000, total_throughput);
+        printf("PRINT %d time elapsed %.4f ms, NODE Reqs/s: %.2f \n", print_count, seconds*1000, total_throughput);
     }
     p.close();
 }
@@ -205,7 +205,7 @@ int main(int argc, char **argv) {
     int time3 = count_timespan(str1, str2); 
 
     LogInfo("Results: " << completed_gets << " gets, " << completed_puts << " puts, Total consume " << time3 << "ms");
-    LogInfo("average throughout: " << (completed_gets+completed_puts)*1000/time3 << " MReqs/s");
+    LogInfo("average throughout: " << (completed_gets+completed_puts)*1000/time3 << " Reqs/s");
     //std::this_thread::sleep_for(std::chrono::seconds(1));
 
     
