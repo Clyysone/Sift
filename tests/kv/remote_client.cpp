@@ -25,17 +25,13 @@
 #define NUM_CLIENT 2
 
 const int num_keys = KV_SIZE;
-volatile double w_stats=0;
+volatile double w_stats = 0;
 
+volatile uint64_t completed_gets = 0;
+volatile uint64_t completed_puts = 0;
 
-struct mypara
-{
-    RemoteClient * client;
-    uint64_t * completed_gets;
-    uint64_t * completed_puts;
-    int num_ops;
-    int read_prob;
-};
+int num_ops = 0;
+int read_prob = 0;
 
 std::string timestamps() {
     std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
@@ -111,22 +107,22 @@ void * exec_populate(void * arg)
 
 void * exec_ops(void * arg)
 {
-    struct mypara * pstru = (struct mypara *) arg;
+    RemoteClient * client = (RemoteClient *)arg;
     std::random_device dev;
     std::mt19937 rng(dev());
     std::uniform_int_distribution<std::mt19937::result_type> dist(1,num_keys-1);
-    for (int i = 0; i < pstru->num_ops; i++) {
+    for (int i = 0; i < num_ops; i++) {
         int op = getOp();
         std::string key("keykeykey" + std::to_string(dist(rng)));
-        printf("%d\n", i);
-        if (op < pstru->read_prob) {
-            pstru->client->get(key);
-            (*(pstru->completed_gets))++;
+        if (op < read_prob) {
+            client->get(key);
+            completed_gets++;
             w_stats++;
-        } else {
+        } 
+        else {
             std::string value("this is a test string " + std::to_string(i));
-            pstru->client->put(key, value);
-            (*(pstru->completed_puts))++;
+            client->put(key, value);
+            completed_puts++;
             w_stats++;
         }
     }
@@ -144,8 +140,8 @@ int main(int argc, char **argv) {
 
     std::string server_addr(argv[1]);
     int server_port = std::stoi(argv[2]);
-    int num_ops = std::stoi(argv[3]);
-    int read_prob = std::stoi(argv[4]);
+    num_ops = std::stoi(argv[3]);
+    read_prob = std::stoi(argv[4]);
 
     RemoteClient * client[NUM_CLIENT];
 
@@ -178,21 +174,11 @@ int main(int argc, char **argv) {
     pthread_create(&print_thread, NULL, print_stats_thread, NULL);
 
     std::string str1 = timestamps();
-    
-    uint64_t completed_gets = 0;
-    uint64_t completed_puts = 0;
 
-    struct mypara pstru;
-
-    pstru.completed_gets = & completed_gets;
-    pstru.completed_puts = & completed_puts;
-    pstru.num_ops = num_ops;
-    pstru.read_prob = read_prob;
     //thread
     pthread_t client_thread[NUM_CLIENT];
     for(int j=0; j<NUM_CLIENT; j++){
-        pstru.client = client[j];
-        pthread_create(&client_thread[j], NULL, exec_ops , &(pstru) );
+        pthread_create(&client_thread[j], NULL, exec_ops , client[j] );
     }
     
     for(int j=0; j<NUM_CLIENT; j++){
